@@ -78,7 +78,6 @@ const el = {
   authPassword: document.querySelector("#authPassword"),
   authSubmit: document.querySelector("#authSubmit"),
   authMessage: document.querySelector("#authMessage"),
-  toast: document.querySelector("#toast"),
   sessionName: document.querySelector("#sessionName"),
   logoutBtn: document.querySelector("#logoutBtn"),
   dailyPrompt: document.querySelector("#dailyPrompt"),
