@@ -922,41 +922,58 @@ document.addEventListener("submit", async (event) => {
   }
 
   if (event.target === el.entryForm) {
-    event.preventDefault();
-    const user = currentUser();
-    const plan = tierFor(user);
-    if (usageFor(user).photos >= plan.photoLimit) {
-      el.createLimitNotice.innerHTML = upgradeNotice("archive");
-      showMessage(el.entryMessage, limitMessage("archive"));
-      openPaywall("archive");
-      return;
-    }
-    if (!pendingImage) {
-      showMessage(el.entryMessage, "An image is required.");
-      return;
-    }
-    const visibility = el.entryVisibility.value;
-    const circleId = visibility === "private" ? null : visibility;
-    state.posts.push({
-      id: makeId("post"),
-      userId: user.id,
-      username: user.username,
-      image: pendingImage,
-      caption: el.entryCaption.value.trim(),
-      tags: plan.id === "collector" ? parseTags(el.entryTags.value) : [],
-      visibility: circleId ? "circle" : "private",
-      circleId,
-      createdAt: Date.now(),
-      prompt: promptForDate()
-    });
- saveState();
-resetEntryForm();
-activeView = "archive";
-selectedCircleId = circleId || selectedCircleId;
-render();
-showToast("Entry created.");
+  event.preventDefault();
 
+  const user = currentUser();
+  const plan = tierFor(user);
+
+  if (usageFor(user).photos >= plan.photoLimit) {
+    el.createLimitNotice.innerHTML = upgradeNotice("archive");
+    showMessage(el.entryMessage, limitMessage("archive"));
+    openPaywall("archive");
+    return;
   }
+
+  const selectedFile = el.entryImage.files[0];
+  const imageData = pendingImage || await readSelectedImage(selectedFile);
+
+  if (!imageData) {
+    showMessage(el.entryMessage, "An image is required.");
+    return;
+  }
+
+  const visibility = el.entryVisibility.value;
+  const circleId = visibility === "private" ? null : visibility;
+
+  state.posts.push({
+    id: makeId("post"),
+    userId: user.id,
+    username: user.username,
+    image: imageData,
+    caption: el.entryCaption.value.trim(),
+    tags: plan.id === "collector" ? parseTags(el.entryTags.value) : [],
+    visibility: circleId ? "circle" : "private",
+    circleId,
+    createdAt: Date.now(),
+    prompt: promptForDate()
+  });
+
+  saveState();
+
+  pendingImage = "";
+  el.entryForm.reset();
+  el.imagePreview.removeAttribute("src");
+  el.imagePreview.hidden = true;
+  el.uploadText.hidden = false;
+  el.entryMessage.textContent = "";
+
+  activeView = "archive";
+  selectedCircleId = circleId || selectedCircleId;
+  render();
+
+  showToast("Entry created.");
+}
+
 
   if (event.target.matches("[data-comment-form]")) {
     event.preventDefault();
