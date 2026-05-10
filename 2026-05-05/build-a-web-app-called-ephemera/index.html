@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ephemera 365</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="paper-grain" aria-hidden="true"></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <header class="site-header">
+      <div class="brand" aria-label="Ephemera 365">
+        <span class="brand-mark">E365</span>
+        <span>
+          <strong>Ephemera 365</strong>
+          <small>daily image journal</small>
+        </span>
+      </div>
+
+      <nav class="main-nav" aria-label="Primary">
+        <button data-nav="home" class="nav-link is-active">Home</button>
+        <button data-nav="create" class="nav-link">Create</button>
+        <button data-nav="archive" class="nav-link">Archive</button>
+        <button data-nav="circles" class="nav-link">Circles</button>
+        <button data-nav="subscription" class="nav-link">Plan</button>
+        <button data-nav="profile" class="nav-link">Profile</button>
+        <button data-nav="admin" class="nav-link admin-only">Admin</button>
+      </nav>
+
+      <div class="auth-actions">
+        <span id="sessionName" class="session-name"></span>
+        <button id="logoutBtn" class="quiet-btn">Log out</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="authView" class="auth-shell">
+        <div class="auth-copy">
+          <p class="eyebrow">Private by default</p>
+          <h1>Make one small visual note every day.</h1>
+          <p>
+            Ephemera 365 is a calm place for daily prompts, image-based entries,
+            and small circles of people you trust.
+          </p>
+        </div>
+
+        <form id="authForm" class="auth-panel">
+          <div class="auth-card-head">
+            <span class="auth-wordmark">Ephemera 365</span>
+            <p>Sign in to keep your daily archive close.</p>
+          </div>
+          <div class="auth-tabs" role="tablist" aria-label="Authentication mode">
+            <button type="button" class="auth-tab is-active" data-auth-mode="signup">Sign up</button>
+            <button type="button" class="auth-tab" data-auth-mode="login">Log in</button>
+          </div>
+          <label>
+            Username
+            <input id="authUsername" type="text" autocomplete="username" required />
+          </label>
+          <label>
+            Email
+            <input id="authEmail" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            Password
+            <input id="authPassword" type="password" autocomplete="current-password" required />
+          </label>
+          <button class="primary-btn" type="submit" id="authSubmit">Create account</button>
+          <p id="authMessage" class="form-note" role="status"></p>
+        </form>
+      </section>
+
+      <section id="appView" class="app-shell" hidden>
+        <section id="homeView" class="view is-visible">
+          <div class="prompt-band">
+            <div class="prompt-copy">
+              <p class="eyebrow">Today&apos;s prompt</p>
+              <h1 id="dailyPrompt">A quiet color you noticed today</h1>
+            </div>
+            <div class="paper-mountains" aria-hidden="true">
+              <span class="mountain mountain-back"></span>
+              <span class="mountain mountain-mid"></span>
+              <span class="mountain mountain-front"></span>
+            </div>
+          </div>
+          <div id="homeUsage" class="usage-strip"></div>
+
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Inspiration</p>
+              <h2>Recent public fragments</h2>
+            </div>
+          </div>
+          <div id="publicInspiration" class="masonry-grid"></div>
+        </section>
+
+        <section id="createView" class="view">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Create entry</p>
+              <h1>Hold on to one image.</h1>
+            </div>
+          </div>
+          <form id="entryForm" class="entry-layout">
+            <label class="upload-zone" for="entryImage">
+              <input id="entryImage" type="file" accept="image/*" required />
+              <img id="imagePreview" alt="" hidden />
+              <span id="uploadText">Choose an image</span>
+            </label>
+            <div class="entry-fields">
+              <label>
+                Caption
+                <textarea id="entryCaption" rows="7" placeholder="A few words, or none at all."></textarea>
+              </label>
+              <label id="entryTagsWrap">
+                Tags
+                <input id="entryTags" type="text" placeholder="light, collage, blue" />
+              </label>
+              <label>
+                Visibility
+                <select id="entryVisibility"></select>
+              </label>
+              <div id="createLimitNotice" class="limit-notice"></div>
+              <button class="primary-btn" type="submit">Save entry</button>
+              <p id="entryMessage" class="form-note" role="status"></p>
+            </div>
+          </form>
+        </section>
+
+        <section id="archiveView" class="view">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Archive</p>
+              <h1>Your personal gallery</h1>
+            </div>
+            <div class="archive-actions">
+              <button class="primary-btn" data-nav="create">Create entry</button>
+              <div class="segmented-control" aria-label="Archive filter">
+                <button class="is-active" data-filter="all">All posts</button>
+                <button data-filter="circle">Circle posts</button>
+              </div>
+            </div>
+          </div>
+          <div id="archiveFilterPanel" class="filter-panel"></div>
+          <div id="archiveGrid" class="gallery-grid"></div>
+        </section>
+
+        <section id="circlesView" class="view">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Circles</p>
+              <h1>Small rooms for shared seeing</h1>
+            </div>
+            <button id="newCircleBtn" class="secondary-btn">New circle</button>
+          </div>
+          <div class="circle-layout">
+            <aside id="circleList" class="circle-list"></aside>
+            <div id="circleDetail" class="circle-detail"></div>
+          </div>
+        </section>
+
+        <section id="subscriptionView" class="view">
+          <div id="paywallRoot"></div>
+        </section>
+
+        <section id="profileView" class="view">
+          <div class="profile-hero">
+            <div>
+              <p class="eyebrow">Profile</p>
+              <h1 id="profileName"></h1>
+            </div>
+          </div>
+          <div id="profilePosts" class="gallery-grid"></div>
+        </section>
+
+        <section id="adminView" class="view">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Admin</p>
+              <h1>Reports and subscriptions</h1>
+            </div>
+          </div>
+          <div id="adminUsers" class="admin-users"></div>
+          <div id="reportList" class="report-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="postDialog" class="post-dialog">
+      <button class="dialog-close" data-close-dialog aria-label="Close">×</button>
+      <div id="dialogContent"></div>
+    </dialog>
+
+    <dialog id="circleDialog" class="small-dialog">
+      <form id="circleForm" method="dialog">
+        <h2>Create a circle</h2>
+        <label>
+          Circle name
+          <input id="circleName" type="text" required maxlength="34" />
+        </label>
+        <label>
+          Invite by email
+          <input id="circleInviteEmail" type="email" placeholder="friend@example.com" />
+        </label>
+        <div class="dialog-actions">
+          <button type="button" class="quiet-btn" data-close-circle>Cancel</button>
+          <button class="primary-btn" type="submit">Create</button>
+        </div>
+        <p id="circleMessage" class="form-note" role="status"></p>
+      </form>
+    </dialog>
+
+    <dialog id="checkoutDialog" class="small-dialog">
+      <form id="checkoutForm" method="dialog">
+        <p class="eyebrow">Stripe checkout</p>
+        <h2 id="checkoutTitle">Upgrade plan</h2>
+        <p id="checkoutCopy" class="dialog-copy"></p>
+        <div class="dialog-actions">
+          <button type="button" class="quiet-btn" data-close-checkout>Cancel</button>
+          <button class="primary-btn" type="submit">Complete monthly checkout</button>
+        </div>
+        <p class="form-note">Prototype note: this simulates Stripe and applies the plan immediately.</p>
+      </form>
+    </dialog>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="paywall.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
