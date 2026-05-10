@@ -888,7 +888,7 @@ function readSelectedImage(file) {
   });
 }
 
-document.addEventListener("submit", (event) => {
+document.addEventListener("submit", async (event) => {
   if (event.target === el.authForm) {
     event.preventDefault();
     const username = el.authUsername.value.trim();
