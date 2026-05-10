@@ -891,7 +891,7 @@ document.addEventListener("submit", async (event) => {
     render();
   }
 
-  if (event.target === el.entryForm) {
+if (event.target === el.entryForm) {
   event.preventDefault();
 
   const user = currentUser();
@@ -905,10 +905,12 @@ document.addEventListener("submit", async (event) => {
   }
 
   const selectedFile = el.entryImage.files[0];
-  const imageData = pendingImage || await readSelectedImage(selectedFile);
+  const imageData = selectedFile
+    ? await readSelectedImage(selectedFile)
+    : pendingImage;
 
   if (!imageData) {
-    showMessage(el.entryMessage, "An image is required.");
+    showMessage(el.entryMessage, "Please select an image.");
     return;
   }
 
@@ -921,30 +923,63 @@ document.addEventListener("submit", async (event) => {
     username: user.username,
     image: imageData,
     caption: el.entryCaption.value.trim(),
-    tags: plan.id === "collector" ? parseTags(el.entryTags.value) : [],
+    tags: plan.id === "collector"
+      ? parseTags(el.entryTags.value)
+      : [],
     visibility: circleId ? "circle" : "private",
     circleId,
     createdAt: Date.now(),
     prompt: promptForDate()
   });
 
+
+  saveState();
+
+ 
+  resetEntryForm();
+
+
+  activeView = "archive";
+
+
+  render();
+
+ 
+  showMessage(el.entryMessage, "Entry created.");
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+  return;
+}
+
   if (event.target.matches("[data-comment-form]")) {
-    event.preventDefault();
-    const input = event.target.elements.comment;
-    const text = input.value.trim();
-    if (!text) return;
-    state.comments.push({
-      id: makeId("comment"),
-      postId: event.target.dataset.commentForm,
-      userId: currentUser().id,
-      username: currentUser().username,
-      text,
-      createdAt: Date.now()
-    });
-    input.value = "";
-    saveState();
-    renderCircles();
-  }
+  event.preventDefault();
+
+  const input = event.target.elements.comment;
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  state.comments.push({
+    id: makeId("comment"),
+    postId: event.target.dataset.commentForm,
+    userId: currentUser().id,
+    username: currentUser().username,
+    text,
+    createdAt: Date.now()
+  });
+
+  input.value = "";
+
+  saveState();
+  renderCircles();
+
+  return;
+}
 
   if (event.target === el.circleForm) {
     event.preventDefault();
