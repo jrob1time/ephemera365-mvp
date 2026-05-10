@@ -928,23 +928,6 @@ document.addEventListener("submit", async (event) => {
     prompt: promptForDate()
   });
 
-  saveState();
-
-  pendingImage = "";
-  el.entryForm.reset();
-  el.imagePreview.removeAttribute("src");
-  el.imagePreview.hidden = true;
-  el.uploadText.hidden = false;
-  el.entryMessage.textContent = "";
-
-  activeView = "archive";
-  selectedCircleId = circleId || selectedCircleId;
-  render();
-
-  showToast("Entry created.");
-}
-
-
   if (event.target.matches("[data-comment-form]")) {
     event.preventDefault();
     const input = event.target.elements.comment;
