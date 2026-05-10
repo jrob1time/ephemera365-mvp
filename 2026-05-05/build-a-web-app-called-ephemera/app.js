@@ -700,17 +700,6 @@ function showMessage(node, text) {
   }, 2600);
 }
 
-function showToast(text) {
-  el.toast.textContent = text;
-  el.toast.classList.add("is-visible");
-  window.setTimeout(() => {
-    if (el.toast.textContent === text) {
-      el.toast.classList.remove("is-visible");
-      el.toast.textContent = "";
-    }
-  }, 2800);
-}
-
 function resetEntryForm() {
   pendingImage = "";
   el.entryForm.reset();
@@ -765,24 +754,6 @@ document.addEventListener("click", (event) => {
   if (target.id === "logoutBtn") {
     sessionId = null;
     localStorage.removeItem("ephemera365-session");
-    render();
-  }
-
-  if (target.dataset.openPost) openPost(target.dataset.openPost);
-  if (target.dataset.reportPost) addReport("post", target.dataset.reportPost);
-  if (target.dataset.reportComment) addReport("comment", target.dataset.reportComment);
-
-  if (target.dataset.deletePost) {
-    const postId = target.dataset.deletePost;
-    const post = state.posts.find((item) => item.id === postId);
-    if (!post || post.userId !== currentUser()?.id) return;
-    state.posts = state.posts.filter((item) => item.id !== postId);
-    state.comments = state.comments.filter((comment) => comment.postId !== postId);
-    state.reports = state.reports.filter((report) => report.targetId !== postId);
-    saveState();
-    if (el.postDialog.open) el.postDialog.close();
-    activeView = "archive";
-    showToast("Entry deleted.");
     render();
   }
 
