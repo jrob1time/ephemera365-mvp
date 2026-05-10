@@ -742,6 +742,7 @@ document.addEventListener("click", (event) => {
     authMode = target.dataset.authMode;
     document.querySelectorAll(".auth-tab").forEach((tab) => tab.classList.toggle("is-active", tab.dataset.authMode === authMode));
     el.authSubmit.textContent = authMode === "signup" ? "Create account" : "Log in";
+    el.authUsername.required = authMode === "signup";
     el.authMessage.textContent = "";
   }
 
