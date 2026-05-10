@@ -928,12 +928,13 @@ document.addEventListener("submit", (event) => {
       createdAt: Date.now(),
       prompt: promptForDate()
     });
-    saveState();
-    resetEntryForm();
-    showToast("Entry created.");
-    activeView = "archive";
-    selectedCircleId = circleId || selectedCircleId;
-    render();
+ saveState();
+resetEntryForm();
+activeView = "archive";
+selectedCircleId = circleId || selectedCircleId;
+render();
+showToast("Entry created.");
+
   }
 
   if (event.target.matches("[data-comment-form]")) {
